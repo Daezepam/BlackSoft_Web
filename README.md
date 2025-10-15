@@ -1,2 +1,2 @@
 # BlackSoft_Web
-Proyecto HTML / CSS / JavaScript para materia Tecnologías Web.
+Proyecto HTML / CSS / JavaScript para la materia Tecnologías Web.
