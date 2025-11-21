@@ -1,0 +1,211 @@
+:root{
+    --rof: #f83367;
+    --roc: #c1326e;
+    --mof: #7f2770;
+    --moc: #9d2c70;
+    --blanco: #ffffff;
+    --negro: #000000;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+main {
+    flex: 1; 
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+  background-color: var(--blanco);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ====================== HEADER ====================== */
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: var(--negro);
+  color: var(--blanco);
+}
+
+header .logo img {
+  height: 50px;
+}
+
+header nav a {
+  color: var(--blanco);
+  text-decoration: none;
+  margin-left: 20px;
+}
+
+header nav a:hover {
+  text-decoration: underline;
+}
+
+/* RESPONSIVE HEADER */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  header nav {
+    margin-top: 10px;
+  }
+
+  header nav a {
+    margin: 0 10px;
+  }
+}
+
+/* ====================== CARRUSEL ====================== */
+
+.carrusel {
+  position: relative;
+  width: 100%;
+  height: 37.5vw;
+  overflow: hidden;
+}
+
+.carrusel .slides img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+.carrusel .slides img.active {
+  display: block;
+}
+
+.carrusel button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--negro);
+  color: var(--blanco);
+  border: none;
+  font-size: 2rem;
+  padding: 10px 15px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.carrusel .Anterior { left: 20px; }
+.carrusel .Siguiente { right: 20px; }
+
+/* RESPONSIVE CARRUSEL */
+@media (max-width: 768px) {
+  .carrusel {
+    height: 40vh;
+  }
+}
+
+/* ====================== TARJETAS ====================== */
+
+.tarjetas {
+  display: flex;
+  gap: 20px;
+  max-width: 1100px;
+  margin: 50px auto;
+  padding: 0 20px;
+}
+
+.card {
+  flex: 1;
+  padding: 20px;
+  background-color: var(--blanco);
+  border: 1px solid var(--moc);
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+.card h3 {
+  margin-bottom: 10px;
+  color: var(--mof);
+}
+
+@media (max-width: 768px) {
+  .tarjetas {
+    flex-direction: column;
+  }
+}
+
+.card {
+  display: block;
+  flex: 1;
+  padding: 20px;
+  background-color: var(--blanco);
+  border: 1px solid var(--moc);
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ====================== ARTICULOS ====================== */
+
+main section article {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 15px;
+  border-bottom: 1px solid var(--mof);
+  text-align: justify;
+}
+
+/* ====================== FORMULARIOS ====================== */
+
+.formulario {
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 20px;
+}
+
+.forma {
+    position: relative;
+    padding-bottom: 80px; 
+}
+
+.forma input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 30px;
+    margin-top: 5px;
+    border: 1px solid var(--moc);
+    border-radius: 10px;
+}
+
+.forma button {
+    position: absolute;
+    bottom: 20px; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    padding: 14px;
+    background-color: var(--mof);
+    color: var(--blanco);
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* ====================== FOOTER ====================== */
+
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: var(--negro);
+  color: var(--blanco);
+}
