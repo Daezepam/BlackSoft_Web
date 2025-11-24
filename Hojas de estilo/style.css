@@ -1,11 +1,20 @@
-:root{
-    --rof: #f83367;
-    --roc: #c1326e;
-    --mof: #7f2770;
-    --moc: #9d2c70;
-    --blanco: #ffffff;
-    --negro: #000000;
+/* ===================================================== */
+/*                   VARIABLES GLOBALES                  */
+/* ===================================================== */
+
+:root {
+  /* Paleta style.css */
+  --rof: #f83367;
+  --roc: #c1326e;
+  --mof: #7f2770;
+  --moc: #9d2c70;
+  --negro: #000000;
+  --blanco: #ffffff;
 }
+
+/* ===================================================== */
+/*                       GENERALES                       */
+/* ===================================================== */
 
 * {
   box-sizing: border-box;
@@ -14,24 +23,36 @@
 }
 
 html, body {
-    height: 100%;
-}
-
-main {
-    flex: 1; 
+  height: 100%;
 }
 
 body {
   font-family: Arial, sans-serif;
-  line-height: 1.5;
   background-color: var(--blanco);
+  color: var(--negro);
+  line-height: 1.5;
   display: flex;
   flex-direction: column;
 }
 
-/* ====================== HEADER ====================== */
+main {
+  flex: 1;
+}
+
+.logomain {
+    display: inline-block;
+    text-decoration: none;
+}
+
+
+/* ===================================================== */
+/*                         HEADER                         */
+/* ===================================================== */
 
 header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -41,36 +62,51 @@ header {
 }
 
 header .logo img {
-  height: 50px;
+  height: 80px;
 }
 
+nav a,
 header nav a {
   color: var(--blanco);
   text-decoration: none;
   margin-left: 20px;
+  font-size: 18px;
 }
 
+nav a:hover,
 header nav a:hover {
-  text-decoration: underline;
+  color: var(--roc);
 }
 
-/* RESPONSIVE HEADER */
+/* Responsive header */
 @media (max-width: 768px) {
   header {
     flex-direction: column;
     text-align: center;
+    gap: 10px;
   }
-
-  header nav {
-    margin-top: 10px;
-  }
-
   header nav a {
     margin: 0 10px;
+    font-size: 16px;
   }
 }
 
-/* ====================== CARRUSEL ====================== */
+/* ===================================================== */
+/*                         TITULOS                       */
+/* ===================================================== */
+
+h2 {
+  width: 90%;
+  margin: 30px auto;
+  font-size: 32px;
+  border-bottom: 1px solid var(--negro);
+  padding-bottom: 10px;
+  color: var(--negro);
+}
+
+/* ===================================================== */
+/*                        CARRUSEL                        */
+/* ===================================================== */
 
 .carrusel {
   position: relative;
@@ -100,62 +136,110 @@ header nav a:hover {
   font-size: 2rem;
   padding: 10px 15px;
   cursor: pointer;
-  z-index: 10;
 }
 
 .carrusel .Anterior { left: 20px; }
 .carrusel .Siguiente { right: 20px; }
 
-/* RESPONSIVE CARRUSEL */
 @media (max-width: 768px) {
   .carrusel {
     height: 40vh;
   }
 }
 
-/* ====================== TARJETAS ====================== */
+/* ===================================================== */
+/*                   PÁGINA DE INFO                      */
+/* ===================================================== */
+
+.bienv {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.bienvenida {
+  text-align: center;
+  max-width: 600px;
+}
+
+.btn-img {
+  display: block;
+  margin: 0 auto;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.btn-img img {
+  width: 400px;
+  height: auto;
+  display: block;
+}
+
+/* ===================================================== */
+/*                  TARJETAS                             */
+/* ===================================================== */
+
 
 .tarjetas {
-  display: flex;
-  gap: 20px;
-  max-width: 1100px;
+  max-width: 1500px;
   margin: 50px auto;
   padding: 0 20px;
 }
 
-.card {
-  flex: 1;
-  padding: 20px;
-  background-color: var(--blanco);
-  border: 1px solid var(--moc);
-  border-radius: 8px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+.tarjetas h2 {
+  text-align: center;
+  margin-bottom: 30px;
 }
 
+.cards-container {
+  display: flex;
+  gap: 20px;
+}
+
+.card {
+  flex: 1;
+  padding: 0;
+  background-color: var(--blanco);
+  border: 1px solid var(--moc);
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden; 
+}
+
+.card-img {
+  width: 100%;
+  height: 100px; 
+  object-fit: cover; 
+  display: block;
+}
+
+.card p{
+  text-align: center;
+  margin-bottom: 15px;
+}
 .card h3 {
-  margin-bottom: 10px;
   color: var(--mof);
+  font-weight: bold;
+  font-size: 26px;
+  text-align: center;
+  padding: 5px;
 }
 
 @media (max-width: 768px) {
-  .tarjetas {
+  .cards-container {
     flex-direction: column;
   }
 }
 
 
-.card {
-  display: block;
-  flex: 1;
-  padding: 20px;
-  background-color: var(--blanco);
-  border: 1px solid var(--moc);
-  border-radius: 8px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-  text-decoration: none;
-  color: inherit;
-}
-/* ====================== ARTICULOS ====================== */
+/* ===================================================== */
+/*                        ARTÍCULOS                       */
+/* ===================================================== */
 
 main section article {
   max-width: 800px;
@@ -165,47 +249,263 @@ main section article {
   text-align: justify;
 }
 
-/* ====================== FORMULARIOS ====================== */
+/* ===================================================== */
+/*                        FORMULARIOS                    */
+/* ===================================================== */
 
 .formulario {
-    max-width: 400px;
-    margin: 80px auto;
-    padding: 20px;
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 20px;
 }
 
 .forma {
-    position: relative;
-    padding-bottom: 80px; 
+  position: relative;
+  padding-bottom: 80px;
 }
 
 .forma input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 30px;
-    margin-top: 5px;
-    border: 1px solid var(--moc);
-    border-radius: 10px;
+  width: 700px;
+  padding: 12px;
+  margin-bottom: 30px;
+  border: 1px solid var(--moc);
+  border-radius: 10px;
 }
 
 .forma button {
-    position: absolute;
-    bottom: 20px; 
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    padding: 14px;
-    background-color: var(--mof);
-    color: var(--blanco);
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
+  width: 100%;
+  padding: 14px;
+  margin-top: 20px;
+  background-color: var(--mof);
+  color: var(--blanco);
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  display: block;
 }
 
-/* ====================== FOOTER ====================== */
+.formlog h2 {
+    text-align: center;
+    white-space: nowrap;
+    margin-bottom: 15px;
+}
+
+.forma h3 {
+    text-align: left;
+    white-space: nowrap;
+    margin-bottom: 15px;
+}
+
+.formlog {
+    text-align: left; 
+}
+
+/* ===================================================== */
+/*       FORMULARIO DE RESEÑAS                      */
+/* ===================================================== */
+
+.title{
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.review-form {
+  width: 90%;
+  margin: 20px auto;
+  background-color: var(--blanco);
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border: 1px solid var(--rof);
+}
+
+.review-form label {
+  font-weight: bold;
+}
+
+.review-form input,
+.review-form select,
+.review-form textarea {
+  padding: 10px;
+  border-radius: 8px;
+  background-color: var(--blanco);
+  border: 1px solid var(--moc);
+  color: var(--mof);
+}
+
+.review-form button {
+  margin-top: 10px;
+  padding: 12px;
+  background-color: var(--mof);
+  border-radius: 8px;
+  border: none;
+  color: var(--blanco);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* ===================================================== */
+/*                        RESEÑAS                         */
+/* ===================================================== */
+
+.reviews-container {
+  width: 90%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+.review-card {
+  background-color: var(--blanco);
+  border: 1px solid var(--rof);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+.review-rating, .review-libro {
+  margin-bottom: 10px;
+}
+
+.review-usuario {
+  font-weight: bold;
+  font-size: 24px;
+  color: var(--rof);
+  text-align: center;
+}
+
+.review-libro{
+  font-style: italic;
+  font-size: 20px;
+  color: var(--roc);
+  text-align: center;
+}
+
+/* ===================================================== */
+/*                      LISTA DE LIBROS                   */
+/* ===================================================== */
+
+.titulo{
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.categorias-boton {
+  width: 90%;
+  margin: 25px auto;
+  background: var(--mof);
+  border: 1px solid var(--mof);
+  color: var(--blanco);
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.categorias-desplegable {
+  width: 90%;
+  margin: 0 0 auto;
+  background: var(--blanco);
+  padding: 20px;
+  border-radius: 8px;
+  display: none;
+}
+
+.categorias-menu {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.categorias-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Cards de libros */
+.libros-container {
+  width: 90%;
+  margin: 30px auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  padding-bottom: 60px;
+}
+
+.libro-card {
+  background: var(--blanco);
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid var(--mof);
+  display: flex;
+  gap: 15px;
+  box-shadow: 0 0 10px var(--negro);
+}
+
+.libro-img {
+  width: 70px;
+  height: 100%;
+  background: none;
+  border-radius: 5px;
+}
+
+.libro-titulo {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--roc);
+  margin-bottom: 15px;
+}
+
+
+/* ===================================================== */
+/*                         FOOTER                         */
+/* ===================================================== */
 
 footer {
-  text-align: center;
+  margin-top: 40px;
   padding: 20px;
   background-color: var(--negro);
   color: var(--blanco);
+  text-align: center;
+  font-size: 14px;
+}
+
+/* ===================================================== */
+/*                      RESPONSIVE                        */
+/* ===================================================== */
+
+@media (max-width: 1100px) {
+  .libros-container,
+  .reviews-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .categorias-menu {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .libros-container,
+  .reviews-container {
+    grid-template-columns: 1fr;
+  }
+  h2 {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 450px) {
+  .libro-card,
+  .review-card {
+    padding: 12px;
+  }
+  h2 {
+    font-size: 22px;
+  }
 }

@@ -3,30 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reseñas - BlackSoft</title>
-
-    <!-- ENLACE AL CSS -->
-    <link rel="stylesheet" href="./Hojas de estilo/style4.css">
+    <title>Reseñas - BS</title>
+    <link rel="stylesheet" href="./Hojas de estilo/style.css">
+    <link rel="icon" href="img/logo.png" type="image/png">
 </head>
 <body>
 
 <!-- ----------------- HEADER ----------------- -->
 <header>
     <div class="logo">
-        <img src="img/logo2.png" alt="Logo BlackSoft">
+        <a href="index.html" class="logomain">
+            <img src="img/logo2.png" alt="mainlogobtn">
+        </a>
     </div>
     <nav>
         <a href="index.html">Inicio</a>
+        <a href="libros_populares.html">Libros</a>
         <a href="login.html">Ingresar</a>
-        <a href="registro.html">Registro</a>
+
     </nav>
 </header>
 
-<h2>Reseñas de Usuarios</h2>
+<div class="title">
+    <h2>Reseñas de Usuarios</h2>
+</div>
 
 <!-- ----------------- FORMULARIO ----------------- -->
-
-<h3 class="titulo-form">Escribe tu reseña</h3>
 
 <form class="review-form">
 
@@ -38,15 +40,15 @@
 
     <label>Calificación:</label>
     <select required>
-        <option value="5">⭐⭐⭐⭐⭐ – 5 estrellas</option>
-        <option value="4">⭐⭐⭐⭐ – 4 estrellas</option>
-        <option value="3">⭐⭐⭐ – 3 estrellas</option>
-        <option value="2">⭐⭐ – 2 estrellas</option>
-        <option value="1">⭐ – 1 estrella</option>
+        <option value="5">⭐⭐⭐⭐⭐</option>
+        <option value="4">⭐⭐⭐⭐</option>
+        <option value="3">⭐⭐⭐</option>
+        <option value="2">⭐⭐</option>
+        <option value="1">⭐</option>
     </select>
 
-    <label>Tu reseña:</label>
-    <textarea rows="4" placeholder="Escribe aquí..." required></textarea>
+    <label>Cuentanos tu opinión:</label>
+    <textarea rows="3" placeholder="Escribe aquí..." required></textarea>
 
     <button type="submit">Enviar Reseña</button>
 
