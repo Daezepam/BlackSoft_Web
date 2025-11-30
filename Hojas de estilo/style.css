@@ -662,7 +662,7 @@ main section article {
 }
 
 .about-card {
-  var(--bg-card);
+  color: var(--bg-card);
   display: flex;
   flex-direction: column;
   padding: 20px;
