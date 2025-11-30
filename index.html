@@ -6,6 +6,10 @@
   <title>Biblioteca BlackSoft</title>
   <link rel="stylesheet" href="./Hojas de estilo/style.css">
   <link rel="icon" href="img/logo.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -17,7 +21,17 @@
         </a>
     </div>
 
+    <div class="search">
+        <input id="busca" type="text" placeholder="Buscar..." class="busca">
+        <button id="searchbtn" class="buscabtn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </div>
+
     <nav>
+        <button id="themeToggle" class="theme-btn">
+            <i class="fa-solid fa-moon"></i>
+        </button>
         <a href="info.html">Acerca</a>
         <a href="libros.html">Catálogo</a>
         <a href="resenas.html">Reseñas</a>
@@ -30,9 +44,9 @@
     <!-- ====================== CARRUSEL ====================== -->
     <section class="carrusel">
         <div class="slides">
-            <img src="img/c1.png" alt="Imagen 1">
+            <img src="img/c3.png" alt="Imagen 1">
             <img src="img/c2.png" alt="Imagen 2">
-            <img src="img/c3.png" alt="Imagen 3">
+            <img src="img/c1.png" alt="Imagen 3">
         </div>
         <button class="Anterior">&#10094;</button>
         <button class="Siguiente">&#10095;</button>
@@ -53,31 +67,37 @@
     <h2>SECCIONES</h2>
 
     <div class="cards-container">
-        <a href="libros_populares.html" class="card">
+
+        <a href="libros_populares.html" class="card" data-img="img/s1.png" data-hover="img/h1.png">
             <img src="img/s1.png" alt="LibPop" class="card-img">
+            <img src="img/ss1.png" class="card-img-hover">
             <h3>LIBROS POPULARES</h3>
             <p>Explora las obras más buscadas por los lectores.</p>
         </a>
 
-        <a href="libros.html" class="card">
+        <a href="libros.html" class="card" data-img="img/s2.png" data-hover="img/h2.png">
             <img src="img/s2.png" alt="Lib" class="card-img">
+            <img src="img/ss2.png" class="card-img-hover">
             <h3>LIBROS</h3>
             <p>Encuentra libros por genero, tema o autor.</p>
         </a>
 
-        <a href="resenas.html" class="card">
+        <a href="resenas.html" class="card" data-img="img/s3.png" data-hover="img/h3.png">
             <img src="img/s3.png" alt="Resen" class="card-img">
+            <img src="img/ss3.png" class="card-img-hover">
             <h3>RESEÑAS</h3>
             <p>Lee y crea reseñas de los usuarios.</p>
         </a>
+
     </div>
     </section>
+
 
     <!-- ====================== ARTÍCULOS ====================== -->
     <section>
         <article>
-            <h2>Título de ejemplo</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet nisi vitae nulla fermentum pretium.</p>
+            <h2>Recomendaciones</h2>
+            <p>Proin eget tortor risus. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus.</p>
         </article>
 
         <article>
@@ -95,6 +115,5 @@
 </footer>
 
 <script src="script.js"></script>
-
 </body>
 </html>

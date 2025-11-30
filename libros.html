@@ -6,6 +6,10 @@
     <title>Libros - BS</title>
     <link rel="stylesheet" href="./Hojas de estilo/style.css">
     <link rel="icon" href="img/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -15,7 +19,18 @@
             <img src="img/logo2.png" alt="mainlogobtn">
         </a>
     </div>
+    
+    <div class="search">
+        <input id="busca" type="text" placeholder="Buscar..." class="busca">
+        <button id="searchbtn" class="buscabtn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </div>
+
     <nav>
+        <button id="themeToggle" class="theme-btn">
+            <i class="fa-solid fa-moon"></i>
+        </button>
         <a href="index.html">Inicio</a>
         <a href="info.html">Acerca</a>
         <a href="libros.html">Catálogo</a>
@@ -238,5 +253,6 @@ function toggleCategorias() {
 }
 </script>
 
+<script src="script.js"></script>
 </body>
 </html>
