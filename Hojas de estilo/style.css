@@ -344,6 +344,92 @@ h2 {
   }
 }
 
+/* ===================================================== */
+/*                   PRESTAMOS                    */
+/* ===================================================== */
+
+.prest {
+  max-width: 1500px;
+  margin: 50px auto;
+  padding: 0 20px;
+}
+
+.prestamo {
+  display: flex;
+  gap: 20px;
+}
+
+.prest h2{
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.pr {
+  flex: 1;
+  padding: 0;
+  background-color: var(--bg-card);
+  border: 1px solid var(--moc);
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  text-decoration: none;
+  color: var(--text-body);
+  overflow: hidden;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.pr:hover {
+  background-color: var(--moc);
+  border-color: var(--roc);
+}
+
+.pr-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+.pr-img-hover {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: none;
+}
+
+.pr:hover .pr-img {
+  display: none;
+}
+
+.pr:hover .pr-img-hover {
+  display: block;
+}
+
+.pr p {
+  text-align: center;
+  margin-bottom: 15px;
+  transition: color 0.3s ease;
+}
+
+.pr h3 {
+  color: var(--moc);
+  font-weight: bold;
+  font-size: 26px;
+  text-align: center;
+  padding: 5px;
+  transition: color 0.3s ease;
+}
+
+.pr:hover h3,
+.pr:hover p {
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .prestamo {
+    flex-direction: column;
+  }
+}
 
 /* ===================================================== */
 /*                        ARTÍCULOS                       */
@@ -377,6 +463,8 @@ main section article {
   padding: 12px;
   margin-bottom: 30px;
   border: 1px solid var(--moc);
+  color: var(--text-body);
+  background-color: var(--bg-body);
   border-radius: 10px;
 }
 
@@ -421,7 +509,7 @@ main section article {
 .review-form {
   width: 90%;
   margin: 20px auto;
-  background-color: varvar(--bg-card);
+  background-color: var(--bg-card);
   padding: 20px;
   border-radius: 10px;
   display: flex;
@@ -662,7 +750,7 @@ main section article {
 }
 
 .about-card {
-  color: var(--bg-card);
+  color: var(--text-body);
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -747,6 +835,95 @@ main section article {
   margin-top: 20px;
   color: var(--h2);
 }
+
+/* ===================================================== */
+/*                     PERFIL DE USUARIO                 */
+/* ===================================================== */
+
+.container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.container .profile-card {
+  padding: 20px;
+  margin-bottom: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 12px var(--shadow);
+  background-color: var(--bg-card);
+  border: 1px solid var(--moc);
+}
+
+.container .profile-card h2 {
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--h2);
+  padding-bottom: 8px;
+  color: var(--text-body);
+}
+
+.container .info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 25px;
+  margin-bottom: 20px;
+}
+
+.container .item {
+  background-color: var(--bg-body);
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid var(--moc);
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.container .btn {
+  display: block;
+  background-color: var(--mof);
+  color: var(--blanco);
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.container .btn:hover {
+  background-color: var(--roc);
+}
+
+.container .btn-small {
+  background-color: var(--moc);
+  color: var(--blanco);
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+}
+
+.container .btn-small:hover {
+  background-color: var(--roc);
+}
+
+@media (max-width: 700px) {
+  .container .info-grid {
+    grid-template-columns: 1fr;
+  }
+  .container .item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+
+
 
 /* ===================================================== */
 /*                         FOOTER                         */
