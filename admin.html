@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - BS</title>
+  <link rel="stylesheet" href="./CSS/style.css">
+  <link rel="icon" href="img/logo.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<header>
+  <a class="logo logomain" href="index.html">
+    <img src="img/logoa.png" alt="Logo">
+  </a>
+
+  <nav>
+    <button id="themeToggle" class="theme-btn">
+        <i class="fa-solid fa-moon"></i>
+    </button>
+    <a href="logout.php">Cerrar sesión</a>
+  </nav>
+</header>
+
+<main class="admin-main">
+
+  <h2 class="admin-title">¡Bienvenido Admin!</h2>
+
+  <!-- ================= LIBROS ================= -->
+
+  <section class="admin-section">
+    <h3>Libros</h3>
+
+    <form class="admin-form" action="admin_libros.php" method="post">
+      <input type="hidden" name="id">
+
+      <input type="text" name="titulo" placeholder="Título" required>
+      <input type="text" name="autor" placeholder="Autor" required>
+      <input type="text" name="genero" placeholder="Género">
+      <input type="number" name="anio" placeholder="Año">
+      <input type="text" name="isbn" placeholder="ISBN">
+      <input type="text" name="imagen" placeholder="URL portada">
+
+      <button type="submit">Guardar libro</button>
+    </form>
+
+    <div class="admin-grid">
+      <div class="admin-card">
+        <div class="admin-card-title">Libro ejemplo</div>
+        <div class="admin-card-actions">
+          <button class="admin-btn edit">Editar</button>
+          <button class="admin-btn delete">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RESEÑAS ================= -->
+
+  <section class="admin-section">
+    <h3>Reseñas</h3>
+
+    <div class="admin-grid">
+      <div class="admin-card">
+        <div class="admin-card-title">Usuario — Libro</div>
+        <p>Texto de la reseña...</p>
+        <div class="admin-card-actions">
+          <button class="admin-btn delete">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ADMINS ================= -->
+
+  <section class="admin-section">
+    <h3>Administradores</h3>
+
+    <form class="admin-form" action="admin_admins.php" method="post">
+      <input type="text" name="usuario" placeholder="Usuario" required>
+      <input type="email" name="email" placeholder="Correo" required>
+      <input type="password" name="password" placeholder="Contraseña" required>
+      <button type="submit">Crear admin</button>
+    </form>
+
+    <div class="admin-grid">
+      <div class="admin-card">
+        <div class="admin-card-title">admin1</div>
+        <div class="admin-card-actions">
+          <button class="admin-btn delete">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+    <p>© 2025 BlackSoft - Todos los derechos reservados</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

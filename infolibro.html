@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Info Libro - BS</title>
+  <link rel="stylesheet" href="./CSS/style.css">
+  <link rel="icon" href="img/logo.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        <a href="index.html"><img src="img/logo2.png" alt="BlackSoft - Biblioteca Virtual"></a>
+    </div>
+
+    <nav>
+        <button id="themeToggle" class="theme-btn">
+        <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <a href="index.html">Inicio</a>
+        <a href="libros.html">Libros</a>
+        <a href="login.html">Ingresar</a>
+    </nav>
+</header>
+
+<main class="book-main">
+
+  <section class="book-card">
+
+    <div class="book-header">
+      <h2 class="book-title">Título del libro</h2>
+    </div>
+
+    <div class="book-content">
+
+      <div class="book-image">
+        <img src="img/libro_ejemplo.jpg" alt="Portada del libro">
+      </div>
+
+      <div class="book-info">
+        <p><strong>Autor:</strong> Nombre del autor</p>
+        <p><strong>Categoría:</strong> Fantasía</p>
+        <p><strong>Año:</strong> 2023</p>
+        <p><strong>ISBN:</strong> 123456789</p>
+      </div>
+
+    </div>
+
+    <div class="book-description">
+      <h3>Descripción</h3>
+      <p>
+        Aquí va la descripción del libro. Texto largo, bla bla,
+        solo contenido. BORRAR AL FINAL ANTES DE CARGAR EN LA BD.
+      </p>
+    </div>
+
+    <div class="book-actions">
+      <a href="resenar.php?id=1" class="book-btn review">Reseñar</a>
+      <a href="prestamo.php?id=1" class="book-btn loan">Pedir préstamo</a>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2025 BlackSoft - Biblioteca Virtual BS</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

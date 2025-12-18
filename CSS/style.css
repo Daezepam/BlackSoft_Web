@@ -923,7 +923,218 @@ main section article {
   }
 }
 
+/* ===================================================== */
+/*                  PANEL DE ADMIN                       */
+/* ===================================================== */
 
+.admin-main {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.admin-title {
+  font-size: 34px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid var(--moc);
+  padding-bottom: 10px;
+}
+
+.admin-section {
+  background: var(--bg-card);
+  border: 1px solid var(--moc);
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 40px;
+  box-shadow: 0 0 15px var(--shadow);
+}
+
+.admin-section h3 {
+  font-size: 26px;
+  margin-bottom: 20px;
+  color: var(--mof);
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.admin-form input {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--moc);
+  background: var(--bg-body);
+  color: var(--text-body);
+}
+
+.admin-form button {
+  padding: 14px;
+  background: var(--mof);
+  color: var(--blanco);
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.admin-form button:hover {
+  background: var(--roc);
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+.admin-card {
+  border: 1px solid var(--rof);
+  border-radius: 10px;
+  padding: 15px;
+  background: var(--bg-body);
+}
+
+.admin-card-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--roc);
+  margin-bottom: 10px;
+}
+
+.admin-card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.admin-btn {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.admin-btn.edit {
+  background: var(--moc);
+  color: var(--blanco);
+}
+
+.admin-btn.delete {
+  background: var(--rof);
+  color: var(--blanco);
+}
+
+.admin-btn:hover {
+  opacity: 0.85;
+}
+
+@media (max-width: 900px) {
+  .admin-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===================================================== */
+/*                 DETALLE DE LIBRO                      */
+/* ===================================================== */
+
+.book-main {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.book-card {
+  background: var(--bg-card);
+  border: 1px solid var(--moc);
+  border-radius: 14px;
+  padding: 30px;
+  box-shadow: 0 0 20px var(--shadow);
+}
+
+.book-title {
+  font-size: 32px;
+  margin-bottom: 25px;
+  border-bottom: 2px solid var(--mof);
+  padding-bottom: 10px;
+}
+
+.book-content {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 25px;
+}
+
+.book-image img {
+  width: 240px;
+  border-radius: 10px;
+  border: 1px solid var(--rof);
+}
+
+.book-info p {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.book-description h3 {
+  margin-bottom: 10px;
+  color: var(--roc);
+}
+
+.book-description p {
+  line-height: 1.6;
+}
+
+.book-actions {
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.book-btn {
+  flex: 1;
+  text-align: center;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: bold;
+  text-decoration: none;
+  color: var(--blanco);
+}
+
+.book-btn.review {
+  background: var(--moc);
+}
+
+.book-btn.loan {
+  background: var(--rof);
+}
+
+.book-btn:hover {
+  opacity: 0.85;
+}
+
+@media (max-width: 700px) {
+  .book-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .book-image img {
+    width: 180px;
+  }
+}
 
 /* ===================================================== */
 /*                         FOOTER                         */
