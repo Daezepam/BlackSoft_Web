@@ -1046,6 +1046,32 @@ main section article {
   }
 }
 
+.admin-body {
+  background-image: url("./img/logo.png");
+  background-repeat: repeat;
+  background-size: 120px;
+  background-position: center;
+  background-color: var(--bg-body);
+  opacity: 1;
+  background-blend-mode: multiply;
+}
+
+
+.admin-body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  opacity: 0.5; 
+  pointer-events: none;
+  z-index: 0;
+}
+
+header, main, footer {
+  position: relative;
+  z-index: 1;
+}
+
 /* ===================================================== */
 /*                 DETALLE DE LIBRO                      */
 /* ===================================================== */
@@ -1182,3 +1208,6 @@ footer {
     font-size: 22px;
   }
 }
+
+
+
