@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libros Populares - BS</title>
+    <link rel="stylesheet" href="./CSS/style.css">
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <a href="index.php" class="logomain">
+            <img src="img/logo2.png" alt="mainlogobtn">
+        </a>
+    </div>
+
+    <div class="search">
+        <input id="busca" type="text" placeholder="Buscar..." class="busca">
+        <button id="searchbtn" class="buscabtn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </div>
+
+    <nav>
+        <button id="themeToggle" class="theme-btn">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+        <a href="info.html">Acerca</a>
+        <a href="index.html">Inicio</a>
+        <a href="login.html">Ingresar</a>
+    </nav>
+</header>
+
+<div class="titulo">
+    <h2>Libros Populares</h2>
+</div>
+
+<!-- CONTENEDOR EN 3 COLUMNAS -->
+<div class="libros-container">
+
+    <!-- LIBRO 1 -->
+    <div class="libro-card">
+        <img src="img/libros_populares/libro1.jpg" class="libro-img" alt="Libro 1">
+        <div class="libro-info">
+            <div class="libro-titulo">El Diario de Greg 2</div>
+            <div class="libro-descripcion">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </div>
+        </div>
+    </div>
+
+    <!-- LIBRO 2 -->
+    <div class="libro-card">
+        <img src="img/libros_populares/libro2.png" class="libro-img" alt="Libro 2">
+        <div class="libro-info">
+            <div class="libro-titulo">Wicked. Memorias de una bruja mala</div>
+            <div class="libro-descripcion">
+                Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </div>
+        </div>
+    </div>
+
+    <!-- LIBRO 3 -->
+    <div class="libro-card">
+        <img src="img/libros_populares/libro3.png" class="libro-img" alt="Libro 3">
+        <div class="libro-info">
+            <div class="libro-titulo">Zootopia 2. La novela</div>
+            <div class="libro-descripcion">
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    © 2025 BlackSoft - Todos los derechos reservados
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
