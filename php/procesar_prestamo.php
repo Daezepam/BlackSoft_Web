@@ -1,32 +1,33 @@
 <?php
 session_start();
-require_once 'bd.php'; 
+require_once __DIR__ . '/bd.php';
 
-if (!isset($_SESSION['usuario_id'])) {
-    header("Location: ../login.php");
-    exit();
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_libro'])) {
-    $id_usuario = $_SESSION['usuario_id'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario_id'])) {
     $id_libro = $_POST['id_libro'];
-    $fecha_actual = date('Y-m-d');
-    $fecha_dev = date('Y-m-d', strtotime('+15 days'));
+    $id_usuario = $_SESSION['usuario_id'];
+    $fecha_prest = date('Y-m-d');
+    $fecha_devo = date('Y-m-d', strtotime('+15 days'));
 
-    try {
-        // Validación: Id_Usuarios
-        $check = $pdo->prepare("SELECT COUNT(*) FROM prestamos WHERE Id_Libros = ? AND Id_Usuarios = ? AND Estado = 'Activo'");
-        $check->execute([$id_libro, $id_usuario]);
-        
-        if ($check->fetchColumn() == 0) {
-            $sql = "INSERT INTO prestamos (Id_Libros, Id_Usuarios, Fecha_prest, Fecha_devolucion, Estado) 
-                    VALUES (?, ?, ?, ?, 'Activo')";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([$id_libro, $id_usuario, $fecha_actual, $fecha_dev]);
-        }
+    // 1. PRIMERO: Verificar si ya tiene ESTE libro activo
+    $check = $pdo->prepare("SELECT COUNT(*) FROM prestamos WHERE Id_Libros = ? AND Id_Usuarios = ? AND (Estado = 'Activo' OR Estado IS NULL OR Estado = '')");
+    $check->execute([$id_libro, $id_usuario]);
+    
+    if ($check->fetchColumn() > 0) {
+        // Si ya lo tiene, lo mandamos de vuelta con un error
+        header("Location: ../prest.php?error=ya_solicitado");
+        exit;
+    }
 
+    // 2. SEGUNDO: Si no lo tiene, insertar con el estado 'Activo' por defecto
+    $sql = "INSERT INTO prestamos (Id_Libros, Id_Usuarios, Fecha_prest, Fecha_devolucion, Estado) 
+            VALUES (?, ?, ?, ?, 'Activo')";
+    $stmt = $pdo->prepare($sql);
+    
+    if ($stmt->execute([$id_libro, $id_usuario, $fecha_prest, $fecha_devo])) {
         header("Location: ../prest.php?success=1");
-    } catch (PDOException $e) {
+    } else {
         header("Location: ../prest.php?error=1");
     }
+} else {
+    header("Location: ../login.php");
 }

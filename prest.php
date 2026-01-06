@@ -2,16 +2,15 @@
 session_start();
 require_once __DIR__ . '/php/bd.php'; 
 
-// Usamos las variables que definiste en tu login.php
 $nombre_usuario = $_SESSION['usuario'] ?? 'Invitado';
 $usuario_id = $_SESSION['usuario_id'] ?? null;
 
-// Buscamos qué libros ya tiene prestados para bloquear el botón
-$libros_prestados = [];
+// 1. LISTA NEGRA (Para bloquear botones de solicitar)
+$libros_en_prestamo = [];
 if ($usuario_id) {
-    $stmt_check = $pdo->prepare("SELECT Id_Libros FROM prestamos WHERE Id_Usuarios = ? AND Estado = 'Activo'");
+    $stmt_check = $pdo->prepare("SELECT Id_Libros FROM prestamos WHERE Id_Usuarios = ? AND Estado IN ('Activo', 'Atrasado', 'Pendiente')");
     $stmt_check->execute([$usuario_id]);
-    $libros_prestados = $stmt_check->fetchAll(PDO::FETCH_COLUMN);
+    $libros_en_prestamo = $stmt_check->fetchAll(PDO::FETCH_COLUMN);
 }
 ?>
 <!DOCTYPE html>
@@ -19,93 +18,125 @@ if ($usuario_id) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Préstamos - BlackSoft</title>
+    <title>Gestión Pro - BlackSoft</title>
     <link rel="stylesheet" href="./CSS/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* Toast Centrado */
+        #toast-container { position: fixed; top: 100px; left: 50%; transform: translateX(-50%); padding: 15px 30px; border-radius: 12px; color: white; z-index: 9999; transition: all 0.4s; min-width: 320px; text-align: center; }
+        .toast-success { background: #2ecc71; border-bottom: 5px solid #27ae60; }
+        .toast-error { background: #e74c3c; border-bottom: 5px solid #c0392b; }
+        .toast-hidden { opacity: 0; top: 80px; pointer-events: none; }
+        .toast-visible { opacity: 1; top: 100px; }
+
+        /* Estilos de la tabla de préstamos */
+        .badge { padding: 4px 8px; border-radius: 5px; font-size: 0.85em; font-weight: bold; }
+        .badge-active { background: #9d2c70; color: white; }
+        .badge-late { background: #e74c3c; color: white; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        
+        .btn-action { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8em; margin-left: 5px; color: white; transition: 0.3s; }
+        .btn-return { background: #3498db; }
+        .btn-renew { background: #f39c12; }
+        .btn-action:hover { filter: brightness(1.2); }
+    </style>
 </head>
 <body>
 
+<div id="toast-container" class="toast-hidden">
+    <i id="toast-icon" class="fa-solid"></i> <span id="toast-message"></span>
+</div>
+
 <header>
-    <div class="logo">
-        <a href="index.php"><img src="img/logo2.png" alt="BlackSoft" style="height: 45px;"></a>
-    </div>
+    <div class="logo"><a href="index.php"><img src="img/logo2.png" alt="Logo" style="height: 45px;"></a></div>
     <nav>
         <a href="index.php">Inicio</a>
-        <a href="resenas.php">Reseñas</a>
-        <a href="perfil.php">Mi Perfil (<?php echo htmlspecialchars($nombre_usuario); ?>)</a>
+        <a href="perfil.php">Hola, <?php echo htmlspecialchars($nombre_usuario); ?></a>
+        <a href="logout.php">Salir</a>
     </nav>
 </header>
 
 <main class="container">
-    <h1 class="titulo-seccion">Gestión de Préstamos</h1>
-
     <section class="profile-card">
-        <h2><i class="fa-solid fa-book-open"></i> Catálogo Disponible</h2>
+        <h2><i class="fa-solid fa-book-open"></i> Libros para Solicitar</h2>
         <?php
-        try {
-            $stmt = $pdo->query("SELECT Id, Titulo FROM libros LIMIT 10");
-            while ($libro = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                echo "<div class='item'>
-                        <div class='info-libro'>
-                            <p><strong>Título:</strong> " . htmlspecialchars($libro['Titulo']) . "</p>
-                        </div>";
-                
-                if (!$usuario_id) {
-                    echo "<a href='login.php?redirect=prest.php' class='btn-small' style='text-decoration:none;'>Solicitar</a>";
-                } else {
-                    // Si ya existe en la tabla prestamos, deshabilitamos el botón
-                    if (in_array($libro['Id'], $libros_prestados)) {
-                        echo "<button class='btn-small' style='background-color: #555; cursor: not-allowed;' disabled>Ya solicitado</button>";
-                    } else {
-                        echo "<form action='php/procesar_prestamo.php' method='POST' style='display:inline;'>
-                                <input type='hidden' name='id_libro' value='{$libro['Id']}'>
-                                <button type='submit' class='btn-small'>Solicitar</button>
-                              </form>";
-                    }
-                }
-                echo "</div>";
+        $stmt = $pdo->query("SELECT Id, Titulo FROM libros");
+        while ($libro = $stmt->fetch()) {
+            $ya = in_array($libro['Id'], $libros_en_prestamo);
+            echo "<div class='item'>
+                    <p><strong>{$libro['Titulo']}</strong></p>";
+            if ($usuario_id) {
+                if ($ya) echo "<span class='badge badge-active'>Ya lo tienes</span>";
+                else echo "<form action='php/acciones_prestamo.php' method='POST'><input type='hidden' name='id_libro' value='{$libro['Id']}'><input type='hidden' name='accion' value='solicitar'><button type='submit' class='btn-small'>Solicitar</button></form>";
             }
-        } catch (PDOException $e) { echo "Error cargando libros."; }
+            echo "</div>";
+        }
         ?>
     </section>
 
     <section class="profile-card">
-        <h2><i class="fa-solid fa-clock-rotate-left"></i> Mis préstamos activos</h2>
+        <h2><i class="fa-solid fa-clock-rotate-left"></i> Gestión de mis Préstamos</h2>
         <?php
         if ($usuario_id) {
-            try {
-                // Sincronizado con tu phpMyAdmin: Id_Usuarios y Estado 'Activo'
-                $sql = "SELECT p.*, l.Titulo FROM prestamos p 
-                        JOIN libros l ON p.Id_Libros = l.Id 
-                        WHERE p.Id_Usuarios = ? AND p.Estado = 'Activo'";
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([$usuario_id]);
-                
-                $hay_prestamos = false;
-                while ($pres = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    $hay_prestamos = true;
-                    echo "<div class='item'>
-                            <p><strong>" . htmlspecialchars($pres['Titulo']) . "</strong> - Vence: {$pres['Fecha_devolucion']}</p>
-                            <span class='status' style='color: #9d2c70;'>{$pres['Estado']}</span>
+            $sql = "SELECT p.*, l.Titulo FROM prestamos p JOIN libros l ON p.Id_Libros = l.Id 
+                    WHERE p.Id_Usuarios = ? AND p.Estado != 'Devuelto' ORDER BY p.Fecha_devolucion ASC";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$usuario_id]);
+            $prestamos = $stmt->fetchAll();
+
+            if ($prestamos) {
+                foreach ($prestamos as $p) {
+                    // CÁLCULO DE DÍAS RESTANTES
+                    $hoy = new DateTime();
+                    $vence = new DateTime($p['Fecha_devolucion']);
+                    $diff = $hoy->diff($vence);
+                    $dias = (int)$diff->format("%r%a");
+
+                    $clase_badge = ($dias < 0) ? 'badge-late' : 'badge-active';
+                    $texto_vence = ($dias < 0) ? "VENCIDO por " . abs($dias) . " días" : "Faltan $dias días";
+
+                    echo "<div class='item' style='border-left: 5px solid ".($dias < 0 ? '#e74c3c' : '#9d2c70').";'>
+                            <div style='flex-grow:1'>
+                                <p><strong>{$p['Titulo']}</strong></p>
+                                <small>$texto_vence ({$p['Fecha_devolucion']})</small>
+                            </div>
+                            <div>
+                                <span class='badge $clase_badge'>{$p['Estado']}</span>
+                                
+                                <form action='php/acciones_prestamo.php' method='POST' style='display:inline;'>
+                                    <input type='hidden' name='id_prestamo' value='{$p['Id']}'>
+                                    <input type='hidden' name='accion' value='devolver'>
+                                    <button type='submit' class='btn-action btn-return' title='Devolver'><i class='fa-solid fa-rotate-left'></i></button>
+                                </form>
+
+                                ".($dias >= 0 ? "
+                                <form action='php/acciones_prestamo.php' method='POST' style='display:inline;'>
+                                    <input type='hidden' name='id_prestamo' value='{$p['Id']}'>
+                                    <input type='hidden' name='accion' value='renovar'>
+                                    <button type='submit' class='btn-action btn-renew' title='Renovar 7 días'><i class='fa-solid fa-calendar-plus'></i></button>
+                                </form>" : "")."
+                            </div>
                           </div>";
                 }
-                
-                if (!$hay_prestamos) {
-                    echo "<p>No tienes préstamos activos.</p>";
-                }
-            } catch (PDOException $e) {
-                echo "Error: " . $e->getMessage();
-            }
-        } else {
-            echo "<p>Inicia sesión para ver tus préstamos.</p>";
+            } else { echo "<p>No tienes préstamos activos.</p>"; }
         }
         ?>
     </section>
 </main>
 
-<footer style="text-align: right; padding: 20px 50px;">
-    <p>© 2025 BlackSoft - Todos los derechos reservados</p>
-</footer>
-
+<script>
+function showToast(msj, tipo) {
+    const toast = document.getElementById('toast-container');
+    document.getElementById('toast-message').innerText = msj;
+    toast.className = 'toast-visible ' + (tipo === 'success' ? 'toast-success' : 'toast-error');
+    document.getElementById('toast-icon').className = 'fa-solid ' + (tipo === 'success' ? 'fa-check-circle' : 'fa-triangle-exclamation');
+    setTimeout(() => { toast.className = 'toast-hidden'; }, 4000);
+}
+window.onload = () => {
+    const p = new URLSearchParams(window.location.search);
+    if (p.has('success')) showToast("¡Acción realizada con éxito!", "success");
+    if (p.has('error')) showToast("Hubo un error en la operación.", "error");
+};
+</script>
 </body>
 </html>
