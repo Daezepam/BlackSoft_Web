@@ -76,7 +76,7 @@ session_start();
     <!-- ====================== INFO ====================== -->
     <section class="bienv">
         <div class="bienvenida">
-            <a href="info.php" class="btn-img">
+            <a href="info.html" class="btn-img">
                 <img src="img/logo2.png" alt="logobtn">
             </a>
             <h3>Tu portal de acceso a una amplia colección de libros digitales y recursos bibliográficos.</h3>

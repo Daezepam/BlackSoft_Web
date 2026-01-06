@@ -2,15 +2,15 @@
 session_start();
 require_once __DIR__ . '/php/bd.php';
 
-/*PROTECCIÓN DE SESIÓN*/
-if (!isset($_SESSION['id'])) {
+/* 1. PROTECCIÓN DE SESIÓN: Usamos usuario_id para que coincida con tu login.php */
+if (!isset($_SESSION['usuario_id'])) {
     header("Location: login.php");
     exit;
 }
 
-$idUsuario = $_SESSION['id'];
+$idUsuario = $_SESSION['usuario_id'];
 
-/*DATOS DEL USUARIO*/
+/* 2. DATOS DEL USUARIO */
 $sqlUser = "
     SELECT Nombre, Apellido, Email, Fecha_registro
     FROM Usuarios
@@ -20,18 +20,19 @@ $stmtUser = $pdo->prepare($sqlUser);
 $stmtUser->execute(['id' => $idUsuario]);
 $usuario = $stmtUser->fetch(PDO::FETCH_ASSOC);
 
-/*PRÉSTAMOS ACTIVOS*/
+/* 3. PRÉSTAMOS ACTIVOS: Corregido para buscar 'Activo' e Id_Usuarios */
 $sqlActivos = "
     SELECT L.Titulo, P.Fecha_devolucion
     FROM Prestamos P
     JOIN Libros L ON P.Id_Libros = L.Id
     WHERE P.Id_Usuarios = :id
-    AND P.Estado IN ('Pendiente','Atrasado')
+    AND P.Estado IN ('Activo', 'Pendiente', 'Atrasado')
 ";
 $stmtActivos = $pdo->prepare($sqlActivos);
 $stmtActivos->execute(['id' => $idUsuario]);
+$listaActivos = $stmtActivos->fetchAll(PDO::FETCH_ASSOC);
 
-/*HISTORIAL DE PRÉSTAMOS*/
+/* 4. HISTORIAL DE PRÉSTAMOS */
 $sqlHistorial = "
     SELECT L.Titulo, P.Estado
     FROM Prestamos P
@@ -41,6 +42,7 @@ $sqlHistorial = "
 ";
 $stmtHistorial = $pdo->prepare($sqlHistorial);
 $stmtHistorial->execute(['id' => $idUsuario]);
+$listaHistorial = $stmtHistorial->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -61,7 +63,7 @@ $stmtHistorial->execute(['id' => $idUsuario]);
 <header>
     <div class="logo">
         <a href="index.php" class="logomain">
-            <img src="img/logo2.png" alt="mainlogobtn">
+            <img src="img/logo2.png" alt="mainlogobtn" style="height: 45px;">
         </a>
     </div>
 
@@ -70,54 +72,52 @@ $stmtHistorial->execute(['id' => $idUsuario]);
             <i class="fa-solid fa-moon"></i>
         </button>
         <a href="index.php">Inicio</a>
+        <a href="prest.php">Préstamos</a>
         <a href="logout.php">Cerrar sesión</a>
     </nav>
 </header>
 
 <main class="container">
 
-    <!-- ================= DATOS PERSONALES ================= -->
     <section class="profile-card">
         <h2>Datos personales</h2>
         <div class="info-grid">
-            <p><strong>Nombre:</strong> <?php echo htmlspecialchars($usuario['Nombre']); ?></p>
-            <p><strong>Apellido:</strong> <?php echo htmlspecialchars($usuario['Apellido']); ?></p>
-            <p><strong>Correo:</strong> <?php echo htmlspecialchars($usuario['Email']); ?></p>
-            <p><strong>Miembro desde:</strong> <?php echo $usuario['Fecha_registro']; ?></p>
+            <p><strong>Nombre:</strong> <?php echo htmlspecialchars($usuario['Nombre'] ?? 'No disponible'); ?></p>
+            <p><strong>Apellido:</strong> <?php echo htmlspecialchars($usuario['Apellido'] ?? ''); ?></p>
+            <p><strong>Correo:</strong> <?php echo htmlspecialchars($usuario['Email'] ?? ''); ?></p>
+            <p><strong>Miembro desde:</strong> <?php echo $usuario['Fecha_registro'] ?? '2025'; ?></p>
         </div>
         <button class="btn">Editar perfil</button>
     </section>
 
-    <!-- ================= PRÉSTAMOS ACTIVOS ================= -->
     <section class="profile-card">
         <h2>Préstamos activos</h2>
 
-        <?php if ($stmtActivos->rowCount() === 0): ?>
+        <?php if (empty($listaActivos)): ?>
             <p>No tienes préstamos activos.</p>
         <?php else: ?>
-            <?php while ($p = $stmtActivos->fetch(PDO::FETCH_ASSOC)): ?>
+            <?php foreach ($listaActivos as $p): ?>
                 <div class="item">
                     <p><strong>Título:</strong> <?php echo htmlspecialchars($p['Titulo']); ?></p>
                     <p><strong>Fecha límite:</strong> <?php echo $p['Fecha_devolucion']; ?></p>
                     <button class="btn-small">Renovar</button>
                 </div>
-            <?php endwhile; ?>
+            <?php endforeach; ?>
         <?php endif; ?>
     </section>
 
-    <!-- ================= HISTORIAL ================= -->
     <section class="profile-card">
         <h2>Historial de préstamos</h2>
 
-        <?php if ($stmtHistorial->rowCount() === 0): ?>
+        <?php if (empty($listaHistorial)): ?>
             <p>No hay historial aún.</p>
         <?php else: ?>
-            <?php while ($h = $stmtHistorial->fetch(PDO::FETCH_ASSOC)): ?>
+            <?php foreach ($listaHistorial as $h): ?>
                 <div class="item">
                     <p><strong>Título:</strong> <?php echo htmlspecialchars($h['Titulo']); ?></p>
-                    <p><strong>Estado:</strong> <?php echo $h['Estado']; ?></p>
+                    <p><strong>Estado:</strong> <?php echo htmlspecialchars($h['Estado']); ?></p>
                 </div>
-            <?php endwhile; ?>
+            <?php endforeach; ?>
         <?php endif; ?>
     </section>
 

@@ -94,6 +94,9 @@ $nombre_usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Santiago
         <a href="index.php"><img src="img/logo2.png" alt="BlackSoft Logo"></a>
     </div>
     <nav>
+        <button id="themeToggle" class="theme-btn">
+            <i class="fa-solid fa-moon"></i>
+        </button>
         <a href="index.php">Inicio</a>
         <a href="perfil.php">Mi Perfil</a>
     </nav>
@@ -165,5 +168,6 @@ $nombre_usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Santiago
     © 2026 BlackSoft Web - Sistema de Reseñas
 </footer>
 
+<script src="script.js"></script>
 </body>
 </html>
