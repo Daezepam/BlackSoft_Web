@@ -1,9 +1,11 @@
 <?php
 session_start();
-require_once __DIR__ . '/php/bd.php';
+// Ajustamos la ruta para llegar a bd.php desde la carpeta admin/
+require_once __DIR__ . '/../php/bd.php';
 
+/* PROTECCIÓN */
 if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'Admin') {
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit;
 }
 
@@ -12,11 +14,29 @@ $autor    = $_POST['autor'] ?? '';
 $genero   = $_POST['genero'] ?? '';
 $anio     = $_POST['anio'] ?? null;
 $isbn     = $_POST['isbn'] ?? '';
-$imagen   = $_POST['imagen'] ?? '';
+
+// --- LÓGICA NUEVA PARA LA IMAGEN ---
+$ruta_final_bd = "img/default.png"; // Imagen por defecto por si acaso
+
+if (isset($_FILES['portada']) && $_FILES['portada']['error'] === 0) {
+    $nombre_archivo = time() . "_" . $_FILES['portada']['name']; // Nombre único para que no se sobreescriban
+    $directorio_subida = "../img/portadas/"; 
+
+    // Crear la carpeta si no existe
+    if (!file_exists($directorio_subida)) {
+        mkdir($directorio_subida, 0777, true);
+    }
+
+    if (move_uploaded_file($_FILES['portada']['tmp_name'], $directorio_subida . $nombre_archivo)) {
+        // Esta es la ruta que guardaremos en la BD
+        $ruta_final_bd = "img/portadas/" . $nombre_archivo;
+    }
+}
+// -----------------------------------
 
 if ($titulo && $isbn) {
 
-    // 1️⃣ Insertar libro
+    // 1️⃣ Insertar libro (Usamos $ruta_final_bd en lugar de $imagen)
     $sqlLibro = "
         INSERT INTO Libros (ISBN, Titulo, Descripcion, Portada, Disponibilidad)
         VALUES (:isbn, :titulo, '', :portada, 1)
@@ -25,12 +45,12 @@ if ($titulo && $isbn) {
     $stmt->execute([
         'isbn'    => $isbn,
         'titulo'  => $titulo,
-        'portada' => $imagen
+        'portada' => $ruta_final_bd
     ]);
 
     $idLibro = $pdo->lastInsertId();
 
-    // 2️⃣ Autor
+    // 2️⃣ Autor (Tu código original está bien aquí)
     if ($autor) {
         $stmtAutor = $pdo->prepare("SELECT Id FROM Autores WHERE Nombre = :nombre");
         $stmtAutor->execute(['nombre' => $autor]);
@@ -53,7 +73,7 @@ if ($titulo && $isbn) {
         ]);
     }
 
-    // 3️⃣ Categoría
+    // 3️⃣ Categoría (Tu código original está bien aquí)
     if ($genero) {
         $stmtCat = $pdo->prepare("SELECT Id FROM Categorias WHERE Nombre = :n");
         $stmtCat->execute(['n' => $genero]);
@@ -75,7 +95,9 @@ if ($titulo && $isbn) {
             'cat'   => $idCat
         ]);
     }
-}
 
-header("Location: admin.php");
+    header("Location: ../admin.php?status=libro_creado");
+} else {
+    header("Location: ../admin.php?status=error");
+}
 exit;
