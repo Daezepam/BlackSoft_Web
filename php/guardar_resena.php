@@ -2,15 +2,18 @@
 session_start();
 require_once __DIR__ . '/bd.php'; 
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['id'])) {
-    $usuario_id = $_SESSION['id'];
-    $nombre_libro = $_POST['libro'] ?? null; // Aquí recibimos el texto "Don Quijote..."
-    $comentario = $_POST['comentario'] ?? null;
+// 1. Verificamos la sesión
+$session_id = $_SESSION['usuario_id'] ?? $_SESSION['id'] ?? null;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session_id) {
+    $usuario_id = $session_id;
+    $nombre_libro = trim($_POST['libro'] ?? ''); 
+    $comentario = trim($_POST['comentario'] ?? '');
     $puntos = $_POST['puntos'] ?? 5;
 
-    if ($nombre_libro && $comentario) {
+    if (!empty($nombre_libro) && !empty($comentario)) {
         try {
-            // 1. Buscamos el ID del libro usando el nombre escrito
+            // 2. Buscamos el ID del libro
             $stmtBusca = $pdo->prepare("SELECT Id FROM Libros WHERE Titulo = :titulo LIMIT 1");
             $stmtBusca->execute(['titulo' => $nombre_libro]);
             $libro = $stmtBusca->fetch(PDO::FETCH_ASSOC);
@@ -18,7 +21,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['id'])) {
             if ($libro) {
                 $id_libro_real = $libro['Id'];
 
-                // 2. Insertamos usando los nombres exactos de tu tabla
+                // --- NUEVA VALIDACIÓN: ¿YA EXISTE UNA RESEÑA DE ESTE USUARIO PARA ESTE LIBRO? ---
+                $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM resenas WHERE Id_Usuarios = ? AND Id_Libros = ? AND Estado = 'Activa'");
+                $stmtCheck->execute([$usuario_id, $id_libro_real]);
+                
+                if ($stmtCheck->fetchColumn() > 0) {
+                    // Si ya existe, lo mandamos de vuelta con un estado especial
+                    header("Location: ../resenas.php?status=ya_resenado");
+                    exit;
+                }
+                // -------------------------------------------------------------------------------
+
+                // 3. Si no existe, insertamos la reseña
                 $sql = "INSERT INTO resenas (Id_Usuarios, Id_Libros, Calificacion, Comentario, Fecha, Estado) 
                         VALUES (:uid, :lid, :cal, :com, CURRENT_TIMESTAMP, 'Activa')";
                 
@@ -33,19 +47,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['id'])) {
                 header("Location: ../resenas.php?status=success");
                 exit;
             } else {
-                // Si el libro escrito no existe en la tabla Libros
-                die("Error: El libro '" . htmlspecialchars($nombre_libro) . "' no se encontró en nuestro sistema. Revisa que el título sea idéntico.");
+                header("Location: ../resenas.php?status=error_libro");
+                exit;
             }
 
         } catch (PDOException $e) {
-            die("Error de base de datos: " . $e->getMessage());
+            header("Location: ../resenas.php?status=error_db");
+            exit;
         }
     } else {
-        header("Location: ../resenas.php?status=error_datos");
+        header("Location: ../resenas.php?status=error_vacios");
         exit;
     }
 } else {
     header("Location: ../index.php");
     exit;
 }
-?>

@@ -37,6 +37,18 @@ $nombre_usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Santiago
             border-radius: 10px;
             border-left: 4px solid #9d2c70;
         }
+
+        /* Estilo para la alerta de advertencia */
+        .alert-warning {
+            background: #f1c40f; 
+            color: #000; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            text-align: center; 
+            font-weight: bold;
+            border: 1px solid #d4ac0d;
+        }
     </style>
 </head>
 <body class="body-resena">
@@ -68,6 +80,18 @@ $nombre_usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Santiago
         </div>
     <?php endif; ?>
 
+    <?php if (isset($_GET['status']) && $_GET['status'] == 'ya_resenado'): ?>
+        <div class="alert-warning">
+            <i class="fa-solid fa-triangle-exclamation"></i> ¡YA HAS RESEÑADO ESTE LIBRO ANTERIORMENTE!
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['status']) && $_GET['status'] == 'error_libro'): ?>
+        <div class="alert-error" style="background: #e74c3c; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+            <i class="fa-solid fa-circle-xmark"></i> El libro escrito no existe. Verifica el título exacto.
+        </div>
+    <?php endif; ?>
+
     <div class="form-resena">
         <form action="php/guardar_resena.php" method="POST">
             <label>Título del Libro</label>
@@ -93,7 +117,6 @@ $nombre_usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Santiago
 
     <?php
     try {
-        // Ajusté el query para que coincida con nombres de tablas estándar (Libros o libros)
         $sql = "SELECT R.Comentario, R.Calificacion, R.Fecha, L.Titulo AS TituloLibro 
                 FROM resenas R
                 JOIN libros L ON R.Id_Libros = L.Id
