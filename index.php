@@ -1,6 +1,5 @@
 <?php
 session_start();
-// No necesitamos bd.php aquí a menos que quieras mostrar libros dinámicos
 ?>
 
 <!DOCTYPE html>
@@ -41,10 +40,6 @@ session_start();
         <a href="info.php">Acerca</a>
 
         <?php if (isset($_SESSION['usuario_id'])): ?>
-            <span style="margin-right:10px; color: #fff;">
-                Hola <strong><?php echo htmlspecialchars($_SESSION['usuario']); ?></strong>
-            </span>
-
             <a href="perfil.php">Mi Perfil</a>
 
             <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'Admin'): ?>
@@ -73,7 +68,7 @@ session_start();
 
     <section class="bienv">
         <div class="bienvenida">
-            <a href="info.php" class="btn-img">
+            <a href="info.html" class="btn-img">
                 <img src="img/logo2.png" alt="logobtn">
             </a>
             <h3>Tu portal de acceso a una amplia colección de libros digitales y recursos bibliográficos.</h3>
@@ -83,7 +78,7 @@ session_start();
     <section class="tarjetas">
         <h2>SECCIONES</h2>
         <div class="cards-container">
-            <a href="libros_populares.html" class="card">
+            <a href="libros_populares.php" class="card">
                 <img src="img/s1.png" alt="Libros Favoritos" class="card-img">
                 <img src="img/ss1.png" class="card-img-hover">
                 <h3>LIBROS POPULARES</h3>

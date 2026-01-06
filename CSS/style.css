@@ -1169,6 +1169,90 @@ header, main, footer {
 }
 
 /* ===================================================== */
+/*                         RESEÑAS FORM                         */
+/* ===================================================== */
+
+/* ===================================================== */
+/* RESEÑAS FORM (CORREGIDO)            */
+/* ===================================================== */
+
+/* Usamos selectores más específicos para que no los pisen otros estilos */
+
+.body-resena {
+    background-color: var(--bg-body) !important;
+}
+
+.contenedor-principal {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+.resenabienvenida {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.resenabienvenida h1 {
+    font-size: 2.8rem;
+    margin: 0;
+    color: var(--text-body);
+}
+
+/* Forzamos el diseño de los inputs dentro de la reseña */
+.form-resena .input-dark {
+    display: block; /* Asegura que se comporte como bloque */
+    width: 100% !important;
+    padding: 12px !important;
+    margin: 10px 0 20px 0 !important;
+    background-color: var(--bg-body) !important;
+    border: 1px solid var(--moc) !important;
+    color: var(--text-body) !important;
+    border-radius: 8px !important;
+    box-sizing: border-box;
+}
+
+.form-resena label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--text-body);
+}
+
+/* Forzamos el botón de publicar */
+.form-resena .btn-publicar {
+    background-color: var(--moc) !important;
+    color: var(--blanco) !important;
+    border: none !important;
+    padding: 15px !important;
+    width: 100% !important;
+    border-radius: 10px !important;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: 0.3s ease;
+}
+
+.form-resena .btn-publicar:hover {
+    background-color: var(--roc) !important;
+}
+
+/* Estilos para las tarjetas de la comunidad */
+.card-resena {
+    background-color: var(--bg-card) !important;
+    border-left: 4px solid var(--moc) !important;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px var(--shadow);
+}
+
+.card-resena h3 {
+    color: var(--moc) !important;
+    margin: 0;
+}
+
+/* ===================================================== */
 /*                         FOOTER                         */
 /* ===================================================== */
 

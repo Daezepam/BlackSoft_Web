@@ -2,9 +2,6 @@
 session_start();
 require_once __DIR__ . '/php/bd.php';
 
-/** * IMPORTANTE: Para que no diga 'Invitado', en tu archivo de login.php 
- * debes tener una línea como esta: $_SESSION['usuario'] = $datos_del_usuario['usuario'];
- */
 $nombre_usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Santiago'; 
 ?>
 
@@ -13,81 +10,36 @@ $nombre_usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Santiago
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reseñas - BlackSoft</title>
+    <title>Reseñas - BS</title>
     <link rel="stylesheet" href="./CSS/style.css">
+    <link rel="icon" href="img/logo.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { background-color: #000; color: white; margin: 0; padding: 0; }
-        
-        /* CORRECCIÓN DE PROPORCIÓN DEL LOGO */
-        .logo img {
-            width: auto;
-            height: 60px; /* Altura fija para mantener proporción */
-            object-fit: contain;
+        /* ESTO HACE QUE EL RECUADRO SEA ESTÁTICO */
+        textarea.input-dark {
+            resize: none; /* Bloquea el estiramiento */
+            overflow-y: auto; /* Permite scroll interno si el texto es muy largo */
         }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 5%;
-            background: #000;
-        }
-
-        nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; }
-
-        .contenedor-principal { max-width: 800px; margin: 50px auto; padding: 20px; }
-
-        /* Estilo del formulario */
+        /* Espaciado extra para que se vea bacano */
         .form-resena {
-            background: #111;
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid #333;
-        }
-
-        .input-dark {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0 20px 0;
-            background: #1a1a1a;
-            border: 1px solid #444;
-            color: white;
-            border-radius: 8px;
-            box-sizing: border-box;
-        }
-
-        .btn-publicar {
-            background: #9d2c70; /* Color púrpura original */
-            color: white;
-            border: none;
-            padding: 15px;
-            width: 100%;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        /* Footer original */
-        footer {
-            text-align: center;
-            padding: 30px 0;
-            color: #444;
-            font-size: 0.9rem;
-            margin-top: 50px;
+            margin-bottom: 50px;
         }
 
         .card-resena {
-            background: #151515;
-            border-left: 4px solid #9d2c70;
+            margin-bottom: 20px;
             padding: 20px;
-            margin-top: 20px;
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05); /* Toque oscuro transparente */
+            border-radius: 10px;
+            border-left: 4px solid #9d2c70;
         }
     </style>
 </head>
-<body>
+<body class="body-resena">
 
 <header>
     <div class="logo">
@@ -104,15 +56,15 @@ $nombre_usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Santiago
 
 <main class="contenedor-principal">
     
-    <div style="text-align: center; margin-bottom: 40px;">
-        <h1 style="font-size: 2.8rem; margin: 0;">Hola, <?php echo htmlspecialchars($nombre_usuario); ?></h1>
-        <p style="color: #777; font-size: 1.2rem;">¿Qué te pareció tu última lectura?</p>
-        <hr style="width: 100px; border: 2px solid #9d2c70; margin: 20px auto;">
+    <div class="resenabienvenida">
+        <h1>Hola, <?php echo htmlspecialchars($nombre_usuario); ?></h1>
+        <p>¿Qué te pareció tu última lectura?</p>
+        <div class="divisor-resena"></div>
     </div>
 
     <?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
-        <div style="background: #28a745; color: white; padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 20px;">
-            ¡Reseña publicada con éxito!
+        <div class="alert-success" style="background: #2ecc71; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+            <i class="fa-solid fa-circle-check"></i> ¡Reseña publicada con éxito!
         </div>
     <?php endif; ?>
 
@@ -137,34 +89,40 @@ $nombre_usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Santiago
         </form>
     </div>
 
-    <h2 style="margin-top: 60px; text-align: center;">Reseñas de la Comunidad</h2>
+    <h2 class="comunidad-titulo">Reseñas de la Comunidad</h2>
 
     <?php
     try {
+        // Ajusté el query para que coincida con nombres de tablas estándar (Libros o libros)
         $sql = "SELECT R.Comentario, R.Calificacion, R.Fecha, L.Titulo AS TituloLibro 
                 FROM resenas R
-                JOIN Libros L ON R.Id_Libros = L.Id
+                JOIN libros L ON R.Id_Libros = L.Id
                 WHERE R.Estado = 'Activa'
                 ORDER BY R.Fecha DESC";
         $stmt = $pdo->query($sql);
-        while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $estrellas = str_repeat("⭐", $r['Calificacion']);
-            echo "
-            <div class='card-resena'>
-                <h3 style='color: #9d2c70; margin: 0;'>{$r['TituloLibro']}</h3>
-                <small style='color: #555;'>{$r['Fecha']}</small>
-                <div style='margin: 10px 0;'>$estrellas</div>
-                <p style='color: #ccc;'>\"" . htmlspecialchars($r['Comentario']) . "\"</p>
-            </div>";
+        
+        if ($stmt->rowCount() > 0) {
+            while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $estrellas = str_repeat("⭐", $r['Calificacion']);
+                echo "
+                <div class='card-resena'>
+                    <h3>" . htmlspecialchars($r['TituloLibro']) . "</h3>
+                    <small style='color: #888;'>" . $r['Fecha'] . "</small>
+                    <div class='estrellas-container' style='margin: 10px 0;'>$estrellas</div>
+                    <p style='font-style: italic;'>\"" . htmlspecialchars($r['Comentario']) . "\"</p>
+                </div>";
+            }
+        } else {
+            echo "<p class='no-resenas' style='text-align: center; opacity: 0.6;'>Aún no hay reseñas. ¡Sé el primero!</p>";
         }
     } catch (PDOException $e) {
-        echo "<p style='text-align: center; color: #444;'>No hay reseñas aún.</p>";
+        echo "<p class='no-resenas'>Error al cargar las reseñas.</p>";
     }
     ?>
 
 </main>
 
-<footer>
+<footer style="text-align: center; padding: 40px 0; opacity: 0.7;">
     © 2026 BlackSoft Web - Sistema de Reseñas
 </footer>
 

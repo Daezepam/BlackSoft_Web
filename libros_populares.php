@@ -32,8 +32,8 @@
             <i class="fa-solid fa-moon"></i>
         </button>
         <a href="info.html">Acerca</a>
-        <a href="index.html">Inicio</a>
-        <a href="login.html">Ingresar</a>
+        <a href="index.php">Inicio</a>
+        <a href="login.php">Ingresar</a>
     </nav>
 </header>
 
