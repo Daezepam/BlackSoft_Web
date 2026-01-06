@@ -2,7 +2,7 @@
 session_start();
 require_once __DIR__ . '/php/bd.php';
 
-$nombre_usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Santiago'; 
+$nombre_usuario = isset($_SESSION['nombre']) ? $_SESSION['nombre'] : 'Santiago'; 
 ?>
 
 <!DOCTYPE html>
@@ -19,13 +19,11 @@ $nombre_usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Santiago
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* ESTO HACE QUE EL RECUADRO SEA ESTÁTICO */
         textarea.input-dark {
-            resize: none; /* Bloquea el estiramiento */
-            overflow-y: auto; /* Permite scroll interno si el texto es muy largo */
+            resize: none;
+            overflow-y: auto;
         }
 
-        /* Espaciado extra para que se vea bacano */
         .form-resena {
             margin-bottom: 50px;
         }
@@ -33,12 +31,11 @@ $nombre_usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Santiago
         .card-resena {
             margin-bottom: 20px;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.05); /* Toque oscuro transparente */
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
             border-left: 4px solid #9d2c70;
         }
 
-        /* Estilo para la alerta de advertencia */
         .alert-warning {
             background: #f1c40f; 
             color: #000; 
@@ -48,6 +45,13 @@ $nombre_usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Santiago
             text-align: center; 
             font-weight: bold;
             border: 1px solid #d4ac0d;
+        }
+
+        .contador-container {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -95,10 +99,14 @@ $nombre_usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Santiago
     <div class="form-resena">
         <form action="php/guardar_resena.php" method="POST">
             <label>Título del Libro</label>
-            <input type="text" name="libro" class="input-dark" placeholder="Ej: Don Quijote de la Mancha" required>
+            <input type="text" name="libro" class="input-dark" maxlength="100" placeholder="Ej: Don Quijote de la Mancha" required>
 
             <label>Tu Opinión</label>
-            <textarea name="comentario" class="input-dark" rows="5" placeholder="Escribe tu reseña aquí..." required></textarea>
+            <textarea name="comentario" id="comentario_resena" class="input-dark" rows="5" maxlength="500" placeholder="Escribe tu reseña aquí..." oninput="actualizarContador()" required></textarea>
+            
+            <div class="contador-container">
+                <span id="num_caracteres">0</span> / 500
+            </div>
 
             <label>Calificación</label>
             <select name="puntos" class="input-dark">
@@ -120,7 +128,6 @@ $nombre_usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Santiago
         $sql = "SELECT R.Comentario, R.Calificacion, R.Fecha, L.Titulo AS TituloLibro 
                 FROM resenas R
                 JOIN libros L ON R.Id_Libros = L.Id
-                WHERE R.Estado = 'Activa'
                 ORDER BY R.Fecha DESC";
         $stmt = $pdo->query($sql);
         
@@ -149,6 +156,19 @@ $nombre_usuario = isset($_SESSION['usuario']) ? $_SESSION['usuario'] : 'Santiago
     © 2026 BlackSoft Web - Sistema de Reseñas
 </footer>
 
+<script>
+function actualizarContador() {
+    const area = document.getElementById('comentario_resena');
+    const display = document.getElementById('num_caracteres');
+    display.innerText = area.value.length;
+    
+    if (area.value.length >= 500) {
+        display.style.color = "#e74c3c";
+    } else {
+        display.style.color = "#aaa";
+    }
+}
+</script>
 <script src="script.js"></script>
 </body>
 </html>

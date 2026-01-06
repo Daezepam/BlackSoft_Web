@@ -1299,5 +1299,19 @@ footer {
   }
 }
 
+/* Evita que los inputs y textareas se estiren más de la cuenta */
+.admin-form input, 
+.admin-form textarea {
+    max-width: 100%;
+    box-sizing: border-box; /* Para que el padding no sume al ancho */
+}
+
+/* Si el título en la tarjeta es muy largo, pone "..." al final */
+.admin-card-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px; /* Ajusta según el tamaño de tu tarjeta */
+}
 
 

@@ -1,103 +1,63 @@
 <?php
 session_start();
-// Ajustamos la ruta para llegar a bd.php desde la carpeta admin/
 require_once __DIR__ . '/../php/bd.php';
 
-/* PROTECCIÓN */
 if (!isset($_SESSION['id']) || $_SESSION['rol'] !== 'Admin') {
-    header("Location: ../index.php");
-    exit;
+    header("Location: ../index.php"); exit;
 }
 
-$titulo   = $_POST['titulo'] ?? '';
-$autor    = $_POST['autor'] ?? '';
-$genero   = $_POST['genero'] ?? '';
-$anio     = $_POST['anio'] ?? null;
-$isbn     = $_POST['isbn'] ?? '';
-
-// --- LÓGICA NUEVA PARA LA IMAGEN ---
-$ruta_final_bd = "img/default.png"; // Imagen por defecto por si acaso
+$titulo = substr(trim($_POST['titulo']), 0, 100);
+$autor  = substr(trim($_POST['autor']), 0, 100);
+$genero = substr(trim($_POST['genero']), 0, 50);
+$isbn   = substr(trim($_POST['isbn']), 0, 20);
+$ruta_bd = "img/portadas/default.png";
 
 if (isset($_FILES['portada']) && $_FILES['portada']['error'] === 0) {
-    $nombre_archivo = time() . "_" . $_FILES['portada']['name']; // Nombre único para que no se sobreescriban
-    $directorio_subida = "../img/portadas/"; 
-
-    // Crear la carpeta si no existe
-    if (!file_exists($directorio_subida)) {
-        mkdir($directorio_subida, 0777, true);
-    }
-
-    if (move_uploaded_file($_FILES['portada']['tmp_name'], $directorio_subida . $nombre_archivo)) {
-        // Esta es la ruta que guardaremos en la BD
-        $ruta_final_bd = "img/portadas/" . $nombre_archivo;
+    $dir = "../img/portadas/";
+    if (!file_exists($dir)) mkdir($dir, 0777, true);
+    
+    $ext = pathinfo($_FILES['portada']['name'], PATHINFO_EXTENSION);
+    $nombre = time() . "_" . uniqid() . "." . $ext;
+    
+    if (move_uploaded_file($_FILES['portada']['tmp_name'], $dir . $nombre)) {
+        $ruta_bd = "img/portadas/" . $nombre;
     }
 }
-// -----------------------------------
 
-if ($titulo && $isbn) {
+try {
+    $pdo->beginTransaction();
 
-    // 1️⃣ Insertar libro (Usamos $ruta_final_bd en lugar de $imagen)
-    $sqlLibro = "
-        INSERT INTO Libros (ISBN, Titulo, Descripcion, Portada, Disponibilidad)
-        VALUES (:isbn, :titulo, '', :portada, 1)
-    ";
-    $stmt = $pdo->prepare($sqlLibro);
-    $stmt->execute([
-        'isbn'    => $isbn,
-        'titulo'  => $titulo,
-        'portada' => $ruta_final_bd
-    ]);
-
+    $stmt = $pdo->prepare("INSERT INTO Libros (ISBN, Titulo, Portada, Disponibilidad) VALUES (?, ?, ?, 1)");
+    $stmt->execute([$isbn, $titulo, $ruta_bd]);
     $idLibro = $pdo->lastInsertId();
 
-    // 2️⃣ Autor (Tu código original está bien aquí)
     if ($autor) {
-        $stmtAutor = $pdo->prepare("SELECT Id FROM Autores WHERE Nombre = :nombre");
-        $stmtAutor->execute(['nombre' => $autor]);
-        $autorBD = $stmtAutor->fetch();
-
-        if (!$autorBD) {
-            $pdo->prepare("INSERT INTO Autores (Nombre) VALUES (:n)")
-                ->execute(['n' => $autor]);
-            $idAutor = $pdo->lastInsertId();
-        } else {
-            $idAutor = $autorBD['Id'];
+        $st = $pdo->prepare("SELECT Id FROM Autores WHERE Nombre = ?");
+        $st->execute([$autor]);
+        $aBD = $st->fetch();
+        $idA = $aBD ? $aBD['Id'] : null;
+        if (!$idA) {
+            $pdo->prepare("INSERT INTO Autores (Nombre) VALUES (?)")->execute([$autor]);
+            $idA = $pdo->lastInsertId();
         }
-
-        $pdo->prepare("
-            INSERT INTO Libros_Autores (Id_Libros, Id_Autores)
-            VALUES (:libro, :autor)
-        ")->execute([
-            'libro' => $idLibro,
-            'autor' => $idAutor
-        ]);
+        $pdo->prepare("INSERT INTO Libros_Autores (Id_Libros, Id_Autores) VALUES (?, ?)")->execute([$idLibro, $idA]);
     }
 
-    // 3️⃣ Categoría (Tu código original está bien aquí)
     if ($genero) {
-        $stmtCat = $pdo->prepare("SELECT Id FROM Categorias WHERE Nombre = :n");
-        $stmtCat->execute(['n' => $genero]);
-        $catBD = $stmtCat->fetch();
-
-        if (!$catBD) {
-            $pdo->prepare("INSERT INTO Categorias (Nombre) VALUES (:n)")
-                ->execute(['n' => $genero]);
-            $idCat = $pdo->lastInsertId();
-        } else {
-            $idCat = $catBD['Id'];
+        $stC = $pdo->prepare("SELECT Id FROM Categorias WHERE Nombre = ?");
+        $stC->execute([$genero]);
+        $cBD = $stC->fetch();
+        $idC = $cBD ? $cBD['Id'] : null;
+        if (!$idC) {
+            $pdo->prepare("INSERT INTO Categorias (Nombre) VALUES (?)")->execute([$genero]);
+            $idC = $pdo->lastInsertId();
         }
-
-        $pdo->prepare("
-            INSERT INTO Libros_Categorias (Id_Libros, Id_Categorias)
-            VALUES (:libro, :cat)
-        ")->execute([
-            'libro' => $idLibro,
-            'cat'   => $idCat
-        ]);
+        $pdo->prepare("INSERT INTO Libros_Categorias (Id_Libros, Id_Categorias) VALUES (?, ?)")->execute([$idLibro, $idC]);
     }
 
-    header("Location: ../admin.php?status=libro_creado");
-} else {
+    $pdo->commit();
+    header("Location: ../admin.php?status=success");
+} catch (Exception $e) {
+    $pdo->rollBack();
     header("Location: ../admin.php?status=error");
 }
-exit;
