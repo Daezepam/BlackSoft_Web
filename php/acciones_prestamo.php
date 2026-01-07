@@ -2,56 +2,64 @@
 session_start();
 require_once __DIR__ . '/bd.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario_id'])) {
-    $usuario_id = $_SESSION['usuario_id'];
-    $accion = $_POST['accion'] ?? '';
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: ../login.php");
+    exit();
+}
 
-    try {
+$usuario_id = $_SESSION['usuario_id'];
+$accion = $_POST['accion'] ?? '';
+
+try {
+    if ($accion === 'solicitar' && isset($_POST['id_libro'])) {
+        $id_libro = $_POST['id_libro'];
+        
+        // 1. Verificar disponibilidad real
+        $stmt = $pdo->prepare("SELECT Disponibilidad FROM libros WHERE Id = ?");
+        $stmt->execute([$id_libro]);
+        $libro = $stmt->fetch();
+
+        if ($libro && $libro['Disponibilidad'] == 1) {
+            $pdo->beginTransaction();
+            
+            // 2. Crear el préstamo (7 días de plazo)
+            $fecha_dev = date('Y-m-d', strtotime('+7 days'));
+            $ins = $pdo->prepare("INSERT INTO prestamos (Id_Usuarios, Id_Libros, Fecha_prestamo, Fecha_devolucion, Estado) VALUES (?, ?, NOW(), ?, 'Prestado')");
+            $ins->execute([$usuario_id, $id_libro, $fecha_dev]);
+
+            // 3. Cambiar disponibilidad del libro
+            $upd = $pdo->prepare("UPDATE libros SET Disponibilidad = 0 WHERE Id = ?");
+            $upd->execute([$id_libro]);
+
+            $pdo->commit();
+        }
+    } 
+    
+    if ($accion === 'devolver' && isset($_POST['id_prestamo'])) {
+        $id_p = $_POST['id_prestamo'];
+
         $pdo->beginTransaction();
 
-        if ($accion === 'solicitar') {
-            $id_libro = $_POST['id_libro'];
-            $fecha_dev = date('Y-m-d', strtotime('+14 days'));
-            
-            // Insertar el nuevo préstamo
-            $sql = "INSERT INTO prestamos (Id_Usuarios, Id_Libros, Fecha_devolucion, Estado) VALUES (?, ?, ?, 'Activo')";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([$usuario_id, $id_libro, $fecha_dev]);
+        // 1. Obtener el ID del libro antes de cerrar el préstamo
+        $stmt = $pdo->prepare("SELECT Id_Libros FROM prestamos WHERE Id = ?");
+        $stmt->execute([$id_p]);
+        $res = $stmt->fetch();
 
-            // Marcar el libro como NO disponible (0)
-            $stmt_lib = $pdo->prepare("UPDATE libros SET Disponibilidad = 0 WHERE Id = ?");
-            $stmt_lib->execute([$id_libro]);
-        } 
-        
-        elseif ($accion === 'devolver') {
-            $id_prestamo = $_POST['id_prestamo'];
-            
-            // 1. Buscamos qué libro es antes de marcarlo como devuelto
-            $stmt_info = $pdo->prepare("SELECT Id_Libros FROM prestamos WHERE Id = ?");
-            $stmt_info->execute([$id_prestamo]);
-            $id_libro = $stmt_info->fetchColumn();
+        if ($res) {
+            // 2. Marcar como devuelto
+            $updP = $pdo->prepare("UPDATE prestamos SET Estado = 'Devuelto' WHERE Id = ?");
+            $updP->execute([$id_p]);
 
-            // 2. Cambiamos el estado a 'Devuelto' (así desaparece de Mis Préstamos)
-            $stmt = $pdo->prepare("UPDATE prestamos SET Estado = 'Devuelto' WHERE Id = ? AND Id_Usuarios = ?");
-            $stmt->execute([$id_prestamo, $usuario_id]);
-
-            // 3. ¡Lo liberamos! (Disponibilidad = 1 para que vuelva a aparecer arriba)
-            if ($id_libro) {
-                $stmt_lib = $pdo->prepare("UPDATE libros SET Disponibilidad = 1 WHERE Id = ?");
-                $stmt_lib->execute([$id_libro]);
-            }
+            // 3. Liberar el libro
+            $updL = $pdo->prepare("UPDATE libros SET Disponibilidad = 1 WHERE Id = ?");
+            $updL->execute([$res['Id_Libros']]);
         }
 
         $pdo->commit();
-        header("Location: ../prest.php?success=1");
-        exit();
-
-    } catch (Exception $e) {
-        if ($pdo->inTransaction()) $pdo->rollBack();
-        header("Location: ../prest.php?error=1");
-        exit();
     }
-} else {
-    header("Location: ../index.php");
-    exit();
+} catch (Exception $e) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
 }
+
+header("Location: ../prestamos.php");
+exit();

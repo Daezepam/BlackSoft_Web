@@ -17,43 +17,6 @@ $nombre_usuario = isset($_SESSION['nombre']) ? $_SESSION['nombre'] : 'Santiago';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
-    <style>
-        textarea.input-dark {
-            resize: none;
-            overflow-y: auto;
-        }
-
-        .form-resena {
-            margin-bottom: 50px;
-        }
-
-        .card-resena {
-            margin-bottom: 20px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            border-left: 4px solid #9d2c70;
-        }
-
-        .alert-warning {
-            background: #f1c40f; 
-            color: #000; 
-            padding: 15px; 
-            border-radius: 8px; 
-            margin-bottom: 20px; 
-            text-align: center; 
-            font-weight: bold;
-            border: 1px solid #d4ac0d;
-        }
-
-        .contador-container {
-            text-align: right;
-            font-size: 0.8rem;
-            color: #aaa;
-            margin-top: 5px;
-        }
-    </style>
 </head>
 <body class="body-resena">
 
@@ -78,22 +41,20 @@ $nombre_usuario = isset($_SESSION['nombre']) ? $_SESSION['nombre'] : 'Santiago';
         <div class="divisor-resena"></div>
     </div>
 
-    <?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
-        <div class="alert-success" style="background: #2ecc71; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
-            <i class="fa-solid fa-circle-check"></i> ¡Reseña publicada con éxito!
-        </div>
-    <?php endif; ?>
-
-    <?php if (isset($_GET['status']) && $_GET['status'] == 'ya_resenado'): ?>
-        <div class="alert-warning">
-            <i class="fa-solid fa-triangle-exclamation"></i> ¡YA HAS RESEÑADO ESTE LIBRO ANTERIORMENTE!
-        </div>
-    <?php endif; ?>
-
-    <?php if (isset($_GET['status']) && $_GET['status'] == 'error_libro'): ?>
-        <div class="alert-error" style="background: #e74c3c; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
-            <i class="fa-solid fa-circle-xmark"></i> El libro escrito no existe. Verifica el título exacto.
-        </div>
+    <?php if (isset($_GET['status'])): ?>
+        <?php if ($_GET['status'] == 'success'): ?>
+            <div class="alert-success">
+                <i class="fa-solid fa-circle-check"></i> ¡Reseña publicada con éxito!
+            </div>
+        <?php elseif ($_GET['status'] == 'ya_resenado'): ?>
+            <div class="alert-warning">
+                <i class="fa-solid fa-triangle-exclamation"></i> ¡YA HAS RESEÑADO ESTE LIBRO ANTERIORMENTE!
+            </div>
+        <?php elseif ($_GET['status'] == 'error_libro'): ?>
+            <div class="alert-error">
+                <i class="fa-solid fa-circle-xmark"></i> El libro escrito no existe. Verifica el título exacto.
+            </div>
+        <?php endif; ?>
     <?php endif; ?>
 
     <div class="form-resena">
@@ -137,13 +98,13 @@ $nombre_usuario = isset($_SESSION['nombre']) ? $_SESSION['nombre'] : 'Santiago';
                 echo "
                 <div class='card-resena'>
                     <h3>" . htmlspecialchars($r['TituloLibro']) . "</h3>
-                    <small style='color: #888;'>" . $r['Fecha'] . "</small>
-                    <div class='estrellas-container' style='margin: 10px 0;'>$estrellas</div>
-                    <p style='font-style: italic;'>\"" . htmlspecialchars($r['Comentario']) . "\"</p>
+                    <small class='resena-fecha'>" . $r['Fecha'] . "</small>
+                    <div class='estrellas-container'>$estrellas</div>
+                    <p class='resena-texto'>\"" . htmlspecialchars($r['Comentario']) . "\"</p>
                 </div>";
             }
         } else {
-            echo "<p class='no-resenas' style='text-align: center; opacity: 0.6;'>Aún no hay reseñas. ¡Sé el primero!</p>";
+            echo "<p class='no-resenas'>Aún no hay reseñas. ¡Sé el primero!</p>";
         }
     } catch (PDOException $e) {
         echo "<p class='no-resenas'>Error al cargar las reseñas.</p>";
@@ -152,7 +113,7 @@ $nombre_usuario = isset($_SESSION['nombre']) ? $_SESSION['nombre'] : 'Santiago';
 
 </main>
 
-<footer style="text-align: center; padding: 40px 0; opacity: 0.7;">
+<footer class="main-footer">
     © 2026 BlackSoft Web - Sistema de Reseñas
 </footer>
 
@@ -163,9 +124,9 @@ function actualizarContador() {
     display.innerText = area.value.length;
     
     if (area.value.length >= 500) {
-        display.style.color = "#e74c3c";
+        display.classList.add('contador-limite');
     } else {
-        display.style.color = "#aaa";
+        display.classList.remove('contador-limite');
     }
 }
 </script>
