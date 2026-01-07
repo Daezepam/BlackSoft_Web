@@ -2,7 +2,13 @@
 session_start();
 require_once __DIR__ . '/php/bd.php';
 
-$nombre_usuario = isset($_SESSION['nombre']) ? $_SESSION['nombre'] : 'Santiago'; 
+$usuario_id = $_SESSION['usuario_id'] ?? null;
+$nombre_usuario = $_SESSION['nombre'] ?? 'Invitado';
+
+if (!$usuario_id) {
+    header("Location: login.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -87,8 +93,8 @@ $nombre_usuario = isset($_SESSION['nombre']) ? $_SESSION['nombre'] : 'Santiago';
     <?php
     try {
         $sql = "SELECT R.Comentario, R.Calificacion, R.Fecha, L.Titulo AS TituloLibro 
-                FROM resenas R
-                JOIN libros L ON R.Id_Libros = L.Id
+                FROM Resenas R
+                JOIN Libros L ON R.Id_Libros = L.Id
                 ORDER BY R.Fecha DESC";
         $stmt = $pdo->query($sql);
         
